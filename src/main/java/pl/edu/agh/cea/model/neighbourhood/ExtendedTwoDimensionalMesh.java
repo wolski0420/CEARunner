@@ -181,4 +181,15 @@ public class ExtendedTwoDimensionalMesh<S> implements Neighborhood<S> {
                 .map(solutionList::get)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Takes solution lists and requested solution coordinates, then returns solution from this location
+     * @param solutionList - list of solutions
+     * @param row - row number
+     * @param column - column number
+     * @return - solution located on given coordinates
+     */
+    public S getSolutionBy2DLocation(List<S> solutionList, int row, int column) {
+        return solutionList.get(row * mesh.get(0).size() + column);
+    }
 }
