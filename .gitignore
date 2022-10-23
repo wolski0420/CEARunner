@@ -1,2 +1,6 @@
 # Project exclude paths
 /target/
+.idea
+FUN.csv
+VAR.csv
+*.log
