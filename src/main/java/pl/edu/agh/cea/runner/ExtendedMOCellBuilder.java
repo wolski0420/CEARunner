@@ -17,7 +17,6 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
-import org.uma.jmetal.util.neighborhood.impl.C9;
 import pl.edu.agh.cea.model.neighbourhood.ExtendedTwoDimensionalMesh;
 
 public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<MOCell<S>> {
@@ -38,7 +37,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         this.crossoverOperator = crossoverOperator;
         this.mutationOperator = mutationOperator;
         this.selectionOperator = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
-        this.neighborhood = new C9<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
+        this.neighborhood = new ExtendedTwoDimensionalMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
     }
