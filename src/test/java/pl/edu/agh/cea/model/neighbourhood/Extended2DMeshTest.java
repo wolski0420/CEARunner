@@ -20,67 +20,6 @@ public class Extended2DMeshTest {
     }
 
     @Test
-    public void nullSolutionListGetNeighboursFilter() {
-        // given
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                extended2DMesh.getNeighbors(null, 0));
-    }
-
-    @Test
-    public void emptySolutionListGetNeighboursFilter() {
-        // given
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                extended2DMesh.getNeighbors(Collections.emptyList(), 0));
-    }
-
-    @Test
-    public void solutionPositionNegativeGetNeighboursFilter() {
-        // given
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                extended2DMesh.getNeighbors(Collections.singletonList(9), -1));
-    }
-
-    @Test
-    public void sizeNotEqualGetNeighboursFilter() {
-        // given
-        List<Integer> integers = IntStream.range(0, size)
-                .boxed()
-                .collect(Collectors.toList());
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                extended2DMesh.getNeighbors(integers, 0));
-    }
-
-    @Test
-    public void solutionBeyondGetNeighboursFilter() {
-        // given
-        List<Integer> integers = IntStream.rangeClosed(1, size * size)
-                .boxed()
-                .collect(Collectors.toList());
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                extended2DMesh.getNeighbors(integers, 50));
-    }
-
-    @Test
     public void getNeighboursByIncorrectLevel() {
         // given
 

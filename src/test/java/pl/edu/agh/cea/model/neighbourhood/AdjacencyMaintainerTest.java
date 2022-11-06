@@ -23,64 +23,6 @@ public class AdjacencyMaintainerTest {
     }
 
     @Test
-    public void nullSolutionListGetNeighboursFilter() {
-        // given
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                maintainer.getNeighbors(null, 0));
-    }
-
-    @Test
-    public void emptySolutionListGetNeighboursFilter() {
-        // given
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                maintainer.getNeighbors(Collections.emptyList(), 0));
-    }
-
-    @Test
-    public void solutionPositionNegativeGetNeighboursFilter() {
-        // given
-        List<AdjacencySolutionTestImpl> sample = Collections.singletonList(Mockito.mock(AdjacencySolutionTestImpl.class));
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                maintainer.getNeighbors(sample, -1));
-    }
-
-    @Test
-    public void sizeNotEqualGetNeighboursFilter() {
-        // given
-        List<AdjacencySolutionTestImpl> sample = Collections.singletonList(Mockito.mock(AdjacencySolutionTestImpl.class));
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                maintainer.getNeighbors(sample, 0));
-    }
-
-    @Test
-    public void solutionBeyondGetNeighboursFilter() {
-        // given
-        List<AdjacencySolutionTestImpl> sample = Collections.singletonList(Mockito.mock(AdjacencySolutionTestImpl.class));
-
-        // when
-
-        // then
-        Assertions.assertThrows(JMetalException.class, () ->
-                maintainer.getNeighbors(sample, 50));
-    }
-
-    @Test
     public void getNeighboursByIncorrectLevel() {
         // given
 

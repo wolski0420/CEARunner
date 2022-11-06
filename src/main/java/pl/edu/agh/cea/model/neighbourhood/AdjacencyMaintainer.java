@@ -3,6 +3,7 @@ package pl.edu.agh.cea.model.neighbourhood;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
+import pl.edu.agh.cea.utils.SolutionListValidator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,22 +35,7 @@ public class AdjacencyMaintainer<S extends AdjacencySolution<S, ?>> implements N
      */
     @Override
     public List<S> getNeighbors(List<S> solutionList, int solutionPosition) {
-        if (Objects.isNull(solutionList)) {
-            throw new JMetalException("The solution list is null") ;
-        } else if (solutionList.isEmpty()) {
-            throw new JMetalException("The solution list is empty") ;
-        } else if (solutionPosition < 0) {
-            throw new JMetalException("The solution position value is negative: " + solutionPosition) ;
-        } else if (solutionList.size() != rows * columns) {
-            throw new JMetalException("The solution list size " + solutionList.size() + " is not"
-                    + "equal to the grid size: " + rows + " * " + columns) ;
-        }
-        else if (solutionPosition >= solutionList.size()) {
-            throw new JMetalException("The solution position value " + solutionPosition +
-                    " is equal or greater than the solution list size "
-                    + solutionList.size()) ;
-        }
-
+        SolutionListValidator.checkSolutionListViolations(solutionList, solutionPosition, rows * columns);
         return getHigherLevelNeighbours(solutionList, solutionPosition, 1);
     }
 
