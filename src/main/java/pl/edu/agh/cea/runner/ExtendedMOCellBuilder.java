@@ -17,7 +17,7 @@ import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
-import pl.edu.agh.cea.model.neighbourhood.ExtendedTwoDimensionalMesh;
+import pl.edu.agh.cea.model.neighbourhood.Extended2DMesh;
 
 public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<MOCell<S>> {
     protected final Problem<S> problem;
@@ -37,7 +37,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         this.crossoverOperator = crossoverOperator;
         this.mutationOperator = mutationOperator;
         this.selectionOperator = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
-        this.neighborhood = new ExtendedTwoDimensionalMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
+        this.neighborhood = new Extended2DMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
     }
@@ -56,7 +56,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
             throw new JMetalException("Population size is negative: " + populationSize);
         } else {
             this.populationSize = populationSize;
-            this.neighborhood = new ExtendedTwoDimensionalMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
+            this.neighborhood = new Extended2DMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
             this.archive = new CrowdingDistanceArchive<>(this.populationSize);
             return this;
         }

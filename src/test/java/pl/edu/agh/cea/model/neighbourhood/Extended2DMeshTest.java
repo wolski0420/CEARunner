@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ExtendedTwoDimensionalMeshTest {
+public class Extended2DMeshTest {
     private final static int size = 7;
-    private ExtendedTwoDimensionalMesh<Integer> extendedTwoDimensionalMesh;
+    private Extended2DMesh<Integer> extended2DMesh;
 
     @BeforeEach
     public void init() {
-        extendedTwoDimensionalMesh = new ExtendedTwoDimensionalMesh<>(size, size);
+        extended2DMesh = new Extended2DMesh<>(size, size);
     }
 
     @Test
@@ -27,7 +27,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getNeighbors(null, 0));
+                extended2DMesh.getNeighbors(null, 0));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getNeighbors(Collections.emptyList(), 0));
+                extended2DMesh.getNeighbors(Collections.emptyList(), 0));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getNeighbors(Collections.singletonList(9), -1));
+                extended2DMesh.getNeighbors(Collections.singletonList(9), -1));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getNeighbors(integers, 0));
+                extended2DMesh.getNeighbors(integers, 0));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getNeighbors(integers, 50));
+                extended2DMesh.getNeighbors(integers, 50));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ExtendedTwoDimensionalMeshTest {
 
         // then
         Assertions.assertThrows(JMetalException.class, () ->
-                extendedTwoDimensionalMesh.getHigherLevelNeighbours(Collections.emptyList(), 0, 0));
+                extended2DMesh.getHigherLevelNeighbours(Collections.emptyList(), 0, 0));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ExtendedTwoDimensionalMeshTest {
                 .collect(Collectors.toList());
 
         // when
-        List<Integer> returnedNeighbours = extendedTwoDimensionalMesh.getHigherLevelNeighbours(integers, 24, 1);
+        List<Integer> returnedNeighbours = extended2DMesh.getHigherLevelNeighbours(integers, 24, 1);
 
         // then
         Assertions.assertEquals(8, returnedNeighbours.size());
@@ -119,7 +119,7 @@ public class ExtendedTwoDimensionalMeshTest {
                 .collect(Collectors.toList());
 
         // when
-        List<Integer> returnedNeighbours = extendedTwoDimensionalMesh.getHigherLevelNeighbours(integers, 24, 3);
+        List<Integer> returnedNeighbours = extended2DMesh.getHigherLevelNeighbours(integers, 24, 3);
 
         // then
         Assertions.assertEquals(48, returnedNeighbours.size());

@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * @param <S>
  *     type of Solution
  */
-public class ExtendedTwoDimensionalMesh<S> implements Neighborhood<S> {
+public class Extended2DMesh<S> implements Neighborhood<S> {
     private final List<List<Integer>> mesh;
     private final List<Pair<Integer, Integer>> cornerNeighbourhood;
     private final List<Pair<Integer, Integer>> sideNeighbourhood;
@@ -28,7 +28,7 @@ public class ExtendedTwoDimensionalMesh<S> implements Neighborhood<S> {
      * @param rows - rows number
      * @param columns - columns number
      */
-    public ExtendedTwoDimensionalMesh(int rows, int columns) {
+    public Extended2DMesh(int rows, int columns) {
         this.mesh = new ArrayList<>();
         this.sideNeighbourhood = new ArrayList<>();
         this.cornerNeighbourhood = new ArrayList<>();
