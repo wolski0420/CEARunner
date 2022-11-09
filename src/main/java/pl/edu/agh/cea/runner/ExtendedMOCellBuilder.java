@@ -3,23 +3,23 @@ package pl.edu.agh.cea.runner;
 import java.util.List;
 
 import org.uma.jmetal.algorithm.AlgorithmBuilder;
-import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
-import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
+import org.uma.jmetal.operator.selection.impl.BestSolutionSelection;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.comparator.FitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
+import pl.edu.agh.cea.model.ExtendedMOCell;
 import pl.edu.agh.cea.model.neighbourhood.Extended2DMesh;
 
-public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<MOCell<S>> {
+public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<ExtendedMOCell<S>> {
     protected final Problem<S> problem;
     protected int maxEvaluations;
     protected int populationSize;
@@ -36,7 +36,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         this.populationSize = 101;
         this.crossoverOperator = crossoverOperator;
         this.mutationOperator = mutationOperator;
-        this.selectionOperator = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
+        this.selectionOperator = new BestSolutionSelection<>(new FitnessComparator<>());
         this.neighborhood = new Extended2DMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
@@ -90,8 +90,8 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         }
     }
 
-    public MOCell<S> build() {
-        return new MOCell<>(this.problem, this.maxEvaluations, this.populationSize, this.archive, this.neighborhood, this.crossoverOperator, this.mutationOperator, this.selectionOperator, this.evaluator);
+    public ExtendedMOCell<S> build() {
+        return new ExtendedMOCell<>(this.problem, this.maxEvaluations, this.populationSize, this.archive, this.neighborhood, this.crossoverOperator, this.mutationOperator, this.selectionOperator, this.evaluator);
     }
 
     public Problem<S> getProblem() {
