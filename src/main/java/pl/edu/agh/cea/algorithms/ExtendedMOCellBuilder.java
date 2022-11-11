@@ -1,4 +1,4 @@
-package pl.edu.agh.cea.runner;
+package pl.edu.agh.cea.algorithms;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ import org.uma.jmetal.util.comparator.FitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
-import pl.edu.agh.cea.model.ExtendedMOCell;
 import pl.edu.agh.cea.model.neighbourhood.Extended2DMesh;
+import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<ExtendedMOCell<S>> {
     protected final Problem<S> problem;
@@ -29,6 +29,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
     protected SolutionListEvaluator<S> evaluator;
     protected Neighborhood<S> neighborhood;
     protected BoundedArchive<S> archive;
+    protected AwardedSolutionSelector<S> awardedSolutionSelector;
 
     public ExtendedMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -40,6 +41,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         this.neighborhood = new Extended2DMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
+        this.awardedSolutionSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
     }
 
     public ExtendedMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -91,7 +93,7 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
     }
 
     public ExtendedMOCell<S> build() {
-        return new ExtendedMOCell<>(this.problem, this.maxEvaluations, this.populationSize, this.archive, this.neighborhood, this.crossoverOperator, this.mutationOperator, this.selectionOperator, this.evaluator);
+        return new ExtendedMOCell<>(this.problem, this.maxEvaluations, this.populationSize, this.archive, this.neighborhood, this.crossoverOperator, this.mutationOperator, this.selectionOperator, this.evaluator, this.awardedSolutionSelector);
     }
 
     public Problem<S> getProblem() {
@@ -124,6 +126,14 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
 
     public SolutionListEvaluator<S> getSolutionListEvaluator() {
         return this.evaluator;
+    }
+
+    public AwardedSolutionSelector<S> getAwardedSolutionSelector() {
+        return awardedSolutionSelector;
+    }
+
+    public void setAwardedSolutionSelector(AwardedSolutionSelector<S> awardedSolutionSelector) {
+        this.awardedSolutionSelector = awardedSolutionSelector;
     }
 
     public static enum MOCellVariant {

@@ -18,6 +18,7 @@ import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import pl.edu.agh.cea.algorithms.ExtendedMOCellBuilder;
 
 public class ExtendedMOCellRunner extends AbstractAlgorithmRunner {
     public ExtendedMOCellRunner() {
