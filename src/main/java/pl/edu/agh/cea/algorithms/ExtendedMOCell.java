@@ -13,6 +13,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
+import pl.edu.agh.cea.operator.ExtendedMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 /**
@@ -25,7 +26,7 @@ import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 public class ExtendedMOCell<S extends Solution<?>> extends MOCell<S> {
     protected final AwardedSolutionSelector<S> awardSelector;
 
-    public ExtendedMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, Neighborhood<S> neighborhood, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector) {
+    public ExtendedMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, Neighborhood<S> neighborhood, CrossoverOperator<S> crossoverOperator, ExtendedMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector) {
         super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
         this.awardSelector = awardSelector;
     }
@@ -46,11 +47,6 @@ public class ExtendedMOCell<S extends Solution<?>> extends MOCell<S> {
 
         Set<S> iterAwardedIndividuals = awardSelector.getAllAwarded(population);
 
-        // @TODO here must be put a logic that give iterAwardedIndividuals to mutationOperator (it can be a simply setter)
-        // @TODO of course, special extended mutationOperator is also required (typical one don't allow us to depend on neighbours)
-        // @TODO I recommend creating an interface which extends MutationOperator interface and has a field with setter
-        // @TODO for holding iterAwardedIndividuals, then dependently of our client decision, we will be extending some of
-        // @TODO already existing mutation operators and also implementing our interface what obligates us to implement setter
 
         this.mutationOperator.execute(offspring.get(0));
         result.add(offspring.get(0));

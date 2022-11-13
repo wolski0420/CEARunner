@@ -6,8 +6,6 @@ import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.example.AlgorithmRunner;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.crossover.impl.SBXCrossover;
-import org.uma.jmetal.operator.mutation.MutationOperator;
-import org.uma.jmetal.operator.mutation.impl.PolynomialMutation;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
@@ -19,6 +17,8 @@ import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import pl.edu.agh.cea.algorithms.ExtendedMOCellBuilder;
+import pl.edu.agh.cea.operator.ExtendedPolynomialMutation;
+import pl.edu.agh.cea.operator.ExtendedMutationOperator;
 
 public class ExtendedMOCellRunner extends AbstractAlgorithmRunner {
     public ExtendedMOCellRunner() {
@@ -43,7 +43,7 @@ public class ExtendedMOCellRunner extends AbstractAlgorithmRunner {
         CrossoverOperator<DoubleSolution> crossover = new SBXCrossover(crossoverProbability, crossoverDistributionIndex);
         double mutationProbability = 1.0 / (double)problem.getNumberOfVariables();
         double mutationDistributionIndex = 20.0;
-        MutationOperator<DoubleSolution> mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+        ExtendedMutationOperator<DoubleSolution> mutation = new ExtendedPolynomialMutation(mutationProbability, mutationDistributionIndex);
         SelectionOperator<List<DoubleSolution>, DoubleSolution> selection = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
         Algorithm<List<DoubleSolution>> algorithm = (new ExtendedMOCellBuilder(problem, crossover, mutation)).setSelectionOperator(selection).setMaxEvaluations(25000).setPopulationSize(100).setArchive(new CrowdingDistanceArchive(100)).build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();

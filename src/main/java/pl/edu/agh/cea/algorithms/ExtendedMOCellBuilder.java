@@ -17,6 +17,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import pl.edu.agh.cea.model.neighbourhood.Extended2DMesh;
+import pl.edu.agh.cea.operator.ExtendedMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBuilder<ExtendedMOCell<S>> {
@@ -24,14 +25,14 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
     protected int maxEvaluations;
     protected int populationSize;
     protected CrossoverOperator<S> crossoverOperator;
-    protected MutationOperator<S> mutationOperator;
+    protected ExtendedMutationOperator<S> mutationOperator;
     protected SelectionOperator<List<S>, S> selectionOperator;
     protected SolutionListEvaluator<S> evaluator;
     protected Neighborhood<S> neighborhood;
     protected BoundedArchive<S> archive;
     protected AwardedSolutionSelector<S> awardedSolutionSelector;
 
-    public ExtendedMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator) {
+    public ExtendedMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, ExtendedMutationOperator<S> mutationOperator) {
         this.problem = problem;
         this.maxEvaluations = 25000;
         this.populationSize = 101;
