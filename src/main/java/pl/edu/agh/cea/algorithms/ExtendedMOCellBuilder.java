@@ -13,6 +13,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.FitnessComparator;
+import org.uma.jmetal.util.comparator.StrengthFitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
@@ -38,11 +39,11 @@ public class ExtendedMOCellBuilder<S extends Solution<?>> implements AlgorithmBu
         this.populationSize = 101;
         this.crossoverOperator = crossoverOperator;
         this.mutationOperator = mutationOperator;
-        this.selectionOperator = new BestSolutionSelection<>(new FitnessComparator<>());
+        this.selectionOperator = new BestSolutionSelection<>(new StrengthFitnessComparator<>());
         this.neighborhood = new Extended2DMesh<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
-        this.awardedSolutionSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
+        this.awardedSolutionSelector = new AwardedSolutionSelector<>(new StrengthFitnessComparator<>(), 0.1, 0.01, 0.02);
     }
 
     public ExtendedMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
