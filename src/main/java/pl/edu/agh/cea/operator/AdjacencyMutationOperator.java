@@ -6,6 +6,10 @@ import pl.edu.agh.cea.model.solution.AdjacencySolution;
 
 import java.util.Set;
 
+/**
+ * Interface for obligating AdjacencySolutions to be mutated with iterAwardedSolutions
+ * @param <Source> - type of Solution to mutate
+ */
 public interface AdjacencyMutationOperator<Source> extends MutationOperator<Source> {
     void setIterAwardedSolutions(Set<? extends AdjacencySolution<?, ?>> newIterAwardedSolutions);
 }

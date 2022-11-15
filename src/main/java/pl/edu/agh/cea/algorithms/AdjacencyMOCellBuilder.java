@@ -18,6 +18,10 @@ import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 import java.util.List;
 
+/**
+ * Simply builder for AdjacencyMOCell
+ * @param <S> - type of AdjacencySolution
+ */
 public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implements AlgorithmBuilder<AdjacencyMOCell<S>> {
     private final Problem<S> problem;
     private final CrossoverOperator<S> crossoverOperator;

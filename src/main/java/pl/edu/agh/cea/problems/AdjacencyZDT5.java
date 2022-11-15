@@ -6,6 +6,9 @@ import pl.edu.agh.cea.model.solution.AdjacencyBinarySolution;
 
 import java.util.ArrayList;
 
+/**
+ * Class extending typical ZDT5 problem by creating Adjacency solutions
+ */
 public class AdjacencyZDT5 extends ZDT5 {
     @Override
     public BinarySolution createSolution() {

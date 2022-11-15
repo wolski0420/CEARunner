@@ -19,6 +19,9 @@ import pl.edu.agh.cea.model.solution.AdjacencyBinarySolution;
 import pl.edu.agh.cea.operator.AdjacencyBitFlipMutation;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 
+/**
+ *  Cellular Evolutionary Algorithm sociocognitive scenario
+ */
 public class AdjacencyMOCellRunner extends AbstractAlgorithmRunner {
     public AdjacencyMOCellRunner() {
     }

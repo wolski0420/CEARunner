@@ -5,6 +5,9 @@ import org.uma.jmetal.util.binarySet.BinarySet;
 
 import java.util.List;
 
+/**
+ * AdjacencySolution implementor, it is based on bits genotype
+ */
 public class AdjacencyBinarySolution extends DefaultBinarySolution implements AdjacencySolution<AdjacencyBinarySolution, BinarySet> {
     private final List<AdjacencyBinarySolution> neighbours;
 
