@@ -69,7 +69,7 @@ public class AdjacencyMaintainer<S extends AdjacencySolution<S, ?>> implements N
             allNeighbours.addAll(foundNewNeighbours);
         });
 
-        return allNeighbours.stream().toList();
+        return allNeighbours.stream().collect(Collectors.toList()); // collect method must be used to make it mutable
     }
 
     /**

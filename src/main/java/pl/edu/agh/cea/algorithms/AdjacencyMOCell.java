@@ -1,5 +1,6 @@
 package pl.edu.agh.cea.algorithms;
 
+import org.uma.jmetal.algorithm.multiobjective.mocell.MOCell;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
@@ -11,7 +12,7 @@ import org.uma.jmetal.util.solutionattribute.impl.CrowdingDistance;
 import org.uma.jmetal.util.solutionattribute.impl.DominanceRanking;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
-import pl.edu.agh.cea.operator.ExtendedMutationOperator;
+import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 import java.util.List;
@@ -24,9 +25,12 @@ import java.util.stream.IntStream;
  * Due to fact that AdjacentSolution knows his neighbours, replacement must be extended
  * @param <S> - type of AdjacentSolution
  */
-public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends ExtendedMOCell<S> {
-    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, ExtendedMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector) {
-        super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator, awardSelector);
+public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S> {
+    private final AwardedSolutionSelector<S> awardSelector;
+
+    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector) {
+        super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
+        this.awardSelector = awardSelector;
     }
 
     /**
