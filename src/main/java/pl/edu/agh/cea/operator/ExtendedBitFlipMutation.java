@@ -1,16 +1,16 @@
 package pl.edu.agh.cea.operator;
 
-import org.uma.jmetal.operator.mutation.impl.PolynomialMutation;
+import org.uma.jmetal.operator.mutation.impl.BitFlipMutation;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.solution.doublesolution.DoubleSolution;
+import org.uma.jmetal.solution.binarysolution.BinarySolution;
 
 import java.util.Set;
 
-public class ExtendedPolynomialMutation extends PolynomialMutation implements ExtendedMutationOperator<DoubleSolution> {
+public class ExtendedBitFlipMutation extends BitFlipMutation implements ExtendedMutationOperator<BinarySolution> {
     private Set<? extends Solution<?>> setOfIterAwardedSolutions;
 
-    public ExtendedPolynomialMutation(double mutationProbability, double distributionIndex) {
-        super(mutationProbability, distributionIndex);
+    public ExtendedBitFlipMutation(double mutationProbability) {
+        super(mutationProbability);
     }
 
     @Override
