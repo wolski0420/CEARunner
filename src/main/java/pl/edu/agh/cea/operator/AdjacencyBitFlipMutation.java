@@ -2,6 +2,7 @@ package pl.edu.agh.cea.operator;
 
 import org.uma.jmetal.operator.mutation.impl.BitFlipMutation;
 import org.uma.jmetal.solution.binarysolution.BinarySolution;
+import org.uma.jmetal.util.binarySet.BinarySet;
 import pl.edu.agh.cea.model.solution.AdjacencyBinarySolution;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * Mentioned set is used to check if solution has neighbour specially awarded
  */
 public class AdjacencyBitFlipMutation extends BitFlipMutation implements AdjacencyMutationOperator<BinarySolution> {
+    private final Random random = new Random();
     private Set<? extends AdjacencySolution<?, ?>> setOfIterAwardedSolutions;
 
     public AdjacencyBitFlipMutation(double mutationProbability) {
@@ -42,9 +44,22 @@ public class AdjacencyBitFlipMutation extends BitFlipMutation implements Adjacen
                 .collect(Collectors.toSet());
 
         if (!awardedNeighbours.isEmpty()) {
-            AdjacencySolution<?, ?> chosenAwardedNeighbour = new ArrayList<>(awardedNeighbours).get(new Random().nextInt(awardedNeighbours.size()));
+            AdjacencySolution<?, ?> chosenAwardedNeighbour = new ArrayList<>(awardedNeighbours).get(random.nextInt(awardedNeighbours.size()));
 
-            // @TODO mutation with neighbour attendance - must be defined how it should look like
+            int randomIndex = random.nextInt(Math.min(solution.getNumberOfVariables(), chosenAwardedNeighbour.getNumberOfVariables()));
+            for(int i = 0; i < solution.getNumberOfVariables(); ++i) {
+                if (i == randomIndex) {
+                    // random variable is going to be copied from neighbour
+                    solution.setVariable(randomIndex, (BinarySet) chosenAwardedNeighbour.getVariable(randomIndex));
+                } else {
+                    // rest of variables are flipped
+                    for(int j = 0; j < solution.getVariable(i).getBinarySetLength(); ++j) {
+                        if (random.nextDouble(1) <= probability) {
+                            solution.getVariable(i).flip(j);
+                        }
+                    }
+                }
+            }
         } else {
             super.doMutation(probability, solution);
         }
