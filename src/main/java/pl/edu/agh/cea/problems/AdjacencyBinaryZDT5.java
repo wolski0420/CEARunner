@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Class extending typical ZDT5 problem by creating Adjacency solutions
  */
-public class AdjacencyZDT5 extends ZDT5 {
+public class AdjacencyBinaryZDT5 extends ZDT5 {
     @Override
     public BinarySolution createSolution() {
         return new AdjacencyBinarySolution(getListOfBitsPerVariable(), getNumberOfObjectives(), new ArrayList<>());

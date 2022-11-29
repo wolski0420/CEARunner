@@ -22,8 +22,8 @@ import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 /**
  *  Cellular Evolutionary Algorithm sociocognitive scenario
  */
-public class AdjacencyMOCellRunner extends AbstractAlgorithmRunner {
-    public AdjacencyMOCellRunner() {
+public class AdjacencyBinaryMOCellRunner extends AbstractAlgorithmRunner {
+    public AdjacencyBinaryMOCellRunner() {
     }
 
     public static void main(String[] args) throws JMetalException, FileNotFoundException {
@@ -36,7 +36,7 @@ public class AdjacencyMOCellRunner extends AbstractAlgorithmRunner {
             problemName = args[0];
             referenceParetoFront = args[1];
         } else {
-            problemName = "pl.edu.agh.cea.problems.AdjacencyZDT5";
+            problemName = "pl.edu.agh.cea.problems.AdjacencyBinaryZDT5";
             referenceParetoFront = "";
         }
 
