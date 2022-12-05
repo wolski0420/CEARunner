@@ -8,9 +8,10 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
-import org.uma.jmetal.util.comparator.StrengthFitnessComparator;
+import org.uma.jmetal.util.comparator.FitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
@@ -33,6 +34,7 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
     private SelectionOperator<List<S>, S> selectionOperator;
     private SolutionListEvaluator<S> evaluator;
     private AwardedSolutionSelector<S> awardSelector;
+    private AdjacencyFitnessCalculator<S> fitnessCalculator;
 
     public AdjacencyMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -40,11 +42,11 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         this.populationSize = 101;
         this.crossoverOperator = crossoverOperator;
         this.mutationOperator = mutationOperator;
-        this.selectionOperator = new BestSolutionSelection<>(new StrengthFitnessComparator<>());
+        this.selectionOperator = new BestSolutionSelection<>(new FitnessComparator<>());
         this.neighborhood = new AdjacencyMaintainer<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
-        this.awardSelector = new AwardedSolutionSelector<>(new StrengthFitnessComparator<>(), 0.1, 0.01, 0.02);
+        this.awardSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
     }
 
     public AdjacencyMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -100,10 +102,15 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         return this;
     }
 
+    public AdjacencyMOCellBuilder<S> setFitnessCalculator(AdjacencyFitnessCalculator<S> fitnessCalculator) {
+        this.fitnessCalculator = fitnessCalculator;
+        return this;
+    }
+
     @Override
     public AdjacencyMOCell<S> build() {
         return new AdjacencyMOCell<>(problem, maxEvaluations, populationSize,
                 archive, neighborhood, crossoverOperator, mutationOperator,
-                selectionOperator, evaluator, awardSelector);
+                selectionOperator, evaluator, awardSelector, fitnessCalculator);
     }
 }

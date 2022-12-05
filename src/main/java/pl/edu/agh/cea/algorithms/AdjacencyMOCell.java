@@ -10,6 +10,7 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.solutionattribute.Ranking;
 import org.uma.jmetal.util.solutionattribute.impl.CrowdingDistance;
 import org.uma.jmetal.util.solutionattribute.impl.DominanceRanking;
+import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
@@ -31,10 +32,12 @@ import java.util.stream.IntStream;
  */
 public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S> {
     private final AwardedSolutionSelector<S> awardSelector;
+    private final AdjacencyFitnessCalculator<S> fitnessCalculator;
 
-    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector) {
+    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector, AdjacencyFitnessCalculator<S> fitnessCalculator) {
         super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
         this.awardSelector = awardSelector;
+        this.fitnessCalculator = fitnessCalculator;
     }
 
     /**
@@ -96,5 +99,29 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
         this.mutationOperator.execute(offspring.get(0));
         result.add(offspring.get(0));
         return result;
+    }
+
+    /**
+     * This MOCell extension needs to be aware of fitness in contrast to the base class
+     * Calculating fitness must be done at the beginning of the execution and in all iterations
+     * To avoid extending run method, there is first method from execution taken into consideration
+     * Before initializing progress, fitness is being calculated and set to all the solutions
+     */
+    @Override
+    protected void initProgress() {
+        fitnessCalculator.calculate(this.population);
+        super.initProgress();
+    }
+
+    /**
+     * This MOCell extension needs to be aware of fitness in contrast to the base class
+     * Calculating fitness must be done at the beginning of the execution and in all iterations
+     * To avoid extending run method, there is one method inside iteration loop which update progress
+     * Before update, fitness is being calculated again and set to all the solutions
+     */
+    @Override
+    protected void updateProgress() {
+        fitnessCalculator.calculate(this.population);
+        super.updateProgress();
     }
 }

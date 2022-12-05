@@ -12,6 +12,7 @@ import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import pl.edu.agh.cea.algorithms.AdjacencyMOCellBuilder;
+import pl.edu.agh.cea.fitness.AdjacencyDoubleFitnessCalculator;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
@@ -37,7 +38,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
             referenceParetoFront = args[1];
         } else {
             problemName = "pl.edu.agh.cea.problems.AdjacencyDoubleZDT6";
-            referenceParetoFront = "";
+            referenceParetoFront = "resources/referenceFrontsCSV/ZDT4.csv";
         }
 
         Problem<AdjacencyDoubleSolution> problem = ProblemUtils.loadProblem(problemName);
@@ -54,6 +55,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
                 .setMaxEvaluations(25000)
                 .setPopulationSize(100)
                 .setArchive(new CrowdingDistanceArchive<>(100))
+                .setFitnessCalculator(new AdjacencyDoubleFitnessCalculator())
                 .build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();
         List<AdjacencyDoubleSolution> population = algorithm.getResult();
