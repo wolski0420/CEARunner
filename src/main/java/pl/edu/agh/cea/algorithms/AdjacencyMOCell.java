@@ -109,7 +109,7 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
      */
     @Override
     protected void initProgress() {
-        fitnessCalculator.calculate(this.population);
+        fitnessCalculator.calculate(this.population, this.problem);
         super.initProgress();
     }
 
@@ -121,7 +121,7 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
      */
     @Override
     protected void updateProgress() {
-        fitnessCalculator.calculate(this.population);
+        fitnessCalculator.calculate(this.population, this.problem);
         super.updateProgress();
     }
 }
