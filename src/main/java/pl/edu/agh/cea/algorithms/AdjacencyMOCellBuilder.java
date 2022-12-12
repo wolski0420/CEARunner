@@ -14,9 +14,12 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
+import pl.edu.agh.cea.observation.Subscriber;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,6 +38,7 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
     private SolutionListEvaluator<S> evaluator;
     private AwardedSolutionSelector<S> awardSelector;
     private AdjacencyFitnessCalculator<S> fitnessCalculator;
+    private final List<Subscriber> algorithmSubscribers;
 
     public AdjacencyMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -47,6 +51,7 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
         this.awardSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
+        this.algorithmSubscribers = new ArrayList<>();
     }
 
     public AdjacencyMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -107,10 +112,18 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         return this;
     }
 
+    public AdjacencyMOCellBuilder<S> setAlgorithmObservers(Subscriber ... subscribers) {
+        this.algorithmSubscribers.addAll(List.of(subscribers));
+        return this;
+    }
+
     @Override
     public AdjacencyMOCell<S> build() {
-        return new AdjacencyMOCell<>(problem, maxEvaluations, populationSize,
+        AdjacencyMOCell<S> adjacencyMOCell = new AdjacencyMOCell<>(problem, maxEvaluations, populationSize,
                 archive, neighborhood, crossoverOperator, mutationOperator,
                 selectionOperator, evaluator, awardSelector, fitnessCalculator);
+
+        algorithmSubscribers.forEach(adjacencyMOCell::addSubscriber);
+        return adjacencyMOCell;
     }
 }

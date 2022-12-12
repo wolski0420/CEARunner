@@ -1,7 +1,6 @@
 package pl.edu.agh.cea.fitness;
 
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.solutionattribute.impl.Fitness;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
@@ -56,7 +55,7 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
             List<Double> minimumValues
     ) {
         this.indicatorValues = new ArrayList<>();
-        this.maxIndicatorValue = -1.7976931348623157E308;
+        this.maxIndicatorValue = -Double.MAX_VALUE;
 
         for(int i = 0; i < population.size(); i++) {
             List<AdjacencyDoubleSolution> A = new ArrayList<>(1);
@@ -77,6 +76,8 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
                 if (Math.abs(value) > this.maxIndicatorValue) {
                     this.maxIndicatorValue = Math.abs(value);
                 }
+
+                aux.add(value);
             }
 
             this.indicatorValues.add(aux);
@@ -103,15 +104,15 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
         List<Double> minimumValues = new ArrayList<>(problem.getNumberOfObjectives());
 
         for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
-            maximumValues.set(i, -1.7976931348623157E308);
-            maximumValues.set(i, Double.MAX_VALUE);
+            maximumValues.add(-Double.MAX_VALUE);
+            minimumValues.add(Double.MAX_VALUE);
         }
 
         population.forEach(solution -> {
             for(int obj = 0; obj < problem.getNumberOfObjectives(); obj++) {
                 double value = solution.getObjective(obj);
                 maximumValues.set(obj, Math.max(value, maximumValues.get(obj)));
-                minimumValues.set(obj, Math.min(value, maximumValues.get(obj)));
+                minimumValues.set(obj, Math.min(value, minimumValues.get(obj)));
             }
             solution.setAttribute(Fitness.class, 0.0);
         });

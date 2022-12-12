@@ -14,6 +14,7 @@ import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import pl.edu.agh.cea.algorithms.AdjacencyMOCellBuilder;
 import pl.edu.agh.cea.fitness.AdjacencyDoubleFitnessCalculator;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
+import pl.edu.agh.cea.observation.TypicalFitnessObserver;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
 
@@ -51,11 +52,14 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         double mutationDistributionIndex = 20.0;
         AdjacencyMutationOperator<DoubleSolution> mutation = new AdjacencyPolynomialMutation(mutationProbability, mutationDistributionIndex);
 
+        TypicalFitnessObserver fitnessObserver = new TypicalFitnessObserver();
+
         Algorithm<List<AdjacencyDoubleSolution>> algorithm = new AdjacencyMOCellBuilder(problem, crossover, mutation)
                 .setMaxEvaluations(25000)
                 .setPopulationSize(100)
                 .setArchive(new CrowdingDistanceArchive<>(100))
                 .setFitnessCalculator(new AdjacencyDoubleFitnessCalculator())
+                .setAlgorithmObservers(fitnessObserver)
                 .build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();
         List<AdjacencyDoubleSolution> population = algorithm.getResult();
@@ -68,5 +72,8 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
             printQualityIndicators(population, referenceParetoFront);
         }
 
+        List<Double> avgHistory = fitnessObserver.getAveragesPerEpoch();
+
+        // @TODO visualize something
     }
 }
