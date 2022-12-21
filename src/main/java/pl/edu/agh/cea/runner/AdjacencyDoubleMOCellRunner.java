@@ -1,5 +1,8 @@
 package pl.edu.agh.cea.runner;
 
+import com.github.sh0nk.matplotlib4j.NumpyUtils;
+import com.github.sh0nk.matplotlib4j.Plot;
+import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.example.AlgorithmRunner;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
@@ -19,7 +22,9 @@ import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  Cellular Evolutionary Algorithm sociocognitive scenario
@@ -28,7 +33,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
     public AdjacencyDoubleMOCellRunner() {
     }
 
-    public static void main(String[] args) throws JMetalException, FileNotFoundException {
+    public static void main(String[] args) throws JMetalException, IOException, PythonExecutionException {
         String referenceParetoFront = "";
         String problemName;
 
@@ -75,5 +80,13 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         List<Double> avgHistory = fitnessObserver.getAveragesPerEpoch();
 
         // @TODO visualize something
+        List<Double> x = NumpyUtils.linspace(0, avgHistory.size(), avgHistory.size());
+        List<Double> y = avgHistory;
+
+        Plot plt = Plot.create();
+        plt.plot().add(x, y, "o").label("Fitness");
+        plt.legend().loc("upper right");
+        plt.title("Avg. fitness per iterations");
+        plt.show();
     }
 }
