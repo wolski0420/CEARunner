@@ -1,7 +1,7 @@
 package pl.edu.agh.cea.model.solution;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.uma.jmetal.solution.doublesolution.impl.DefaultDoubleSolution;
+import org.uma.jmetal.util.bounds.Bounds;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import java.util.List;
 public class AdjacencyDoubleSolution extends DefaultDoubleSolution implements AdjacencySolution<AdjacencyDoubleSolution, Double> {
     private final List<AdjacencyDoubleSolution> neighbours;
 
-    public AdjacencyDoubleSolution(List<Pair<Double, Double>> bounds, int numberOfObjectives, int numberOfConstraints, List<AdjacencyDoubleSolution> neighbours) {
-        super(bounds, numberOfObjectives, numberOfConstraints);
+    public AdjacencyDoubleSolution(List<Bounds<Double>> bounds, int numberOfObjectives, int numberOfConstraints, List<AdjacencyDoubleSolution> neighbours) {
+        super(numberOfObjectives, numberOfConstraints, bounds);
         this.neighbours = neighbours;
     }
 

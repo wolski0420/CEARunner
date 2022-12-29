@@ -1,6 +1,6 @@
 package pl.edu.agh.cea.utils;
 
-import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 
 import java.util.List;
 import java.util.Objects;

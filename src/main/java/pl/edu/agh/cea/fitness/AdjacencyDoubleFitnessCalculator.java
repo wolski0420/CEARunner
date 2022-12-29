@@ -23,12 +23,12 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
         double rho = 2.0;
         double r = rho * (maximumValues.get(d - 1) - minimumValues.get(d - 1));
         double max = minimumValues.get(d - 1) + r;
-        double a = solutionA.getObjective(d - 1);
+        double a = solutionA.objectives()[d-1];
         double b;
         if (solutionB == null) {
             b = max;
         } else {
-            b = solutionB.getObjective(d - 1);
+            b = solutionB.objectives()[d-1];
         }
 
         double volume;
@@ -110,17 +110,17 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
 
         population.forEach(solution -> {
             for(int obj = 0; obj < problem.getNumberOfObjectives(); obj++) {
-                double value = solution.getObjective(obj);
+                double value = solution.objectives()[obj];
                 maximumValues.set(obj, Math.max(value, maximumValues.get(obj)));
                 minimumValues.set(obj, Math.min(value, minimumValues.get(obj)));
             }
-            solution.setAttribute(Fitness.class, 0.0);
+            solution.attributes().put(Fitness.class, 0.0);
         });
 
         computeIndicatorValuesHD(population, problem, maximumValues, minimumValues);
 
         for(int position = 0; position < population.size(); position++) {
-            population.get(position).setAttribute(Fitness.class, fitness(population, position));
+            population.get(position).attributes().put(Fitness.class, fitness(population, position));
         }
     }
 

@@ -10,7 +10,7 @@ import org.uma.jmetal.operator.crossover.impl.SBXCrossover;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
-import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
@@ -21,10 +21,8 @@ import pl.edu.agh.cea.observation.TypicalFitnessObserver;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *  Cellular Evolutionary Algorithm sociocognitive scenario
@@ -43,8 +41,10 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
             problemName = args[0];
             referenceParetoFront = args[1];
         } else {
-            problemName = "pl.edu.agh.cea.problems.AdjacencyDoubleZDT6";
-            referenceParetoFront = "resources/referenceFrontsCSV/ZDT4.csv";
+            // @TODO benchmarks: Sphere/Dejong, Ackley, Rastrigin, Griewang, Schweffel (Schaffer?)
+            // @TODO check if there is a possibility to choose single or multi criteria
+            problemName = "pl.edu.agh.cea.problems.AdjacencyDoubleLSMOP9";
+            // referenceParetoFront = "resources/referenceFrontsCSV/ZDT4.csv";
         }
 
         Problem<AdjacencyDoubleSolution> problem = ProblemUtils.loadProblem(problemName);
@@ -73,13 +73,12 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
 
         printFinalSolutionSet(population);
-        if (!referenceParetoFront.equals("")) {
-            printQualityIndicators(population, referenceParetoFront);
-        }
+//        if (!referenceParetoFront.equals("")) {
+//            printQualityIndicators(population, referenceParetoFront);
+//        }
 
         List<Double> avgHistory = fitnessObserver.getAveragesPerEpoch();
 
-        // @TODO visualize something
         List<Double> x = NumpyUtils.linspace(0, avgHistory.size(), avgHistory.size());
         List<Double> y = avgHistory;
 

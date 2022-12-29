@@ -6,10 +6,11 @@ import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.densityestimator.DensityEstimator;
+import org.uma.jmetal.util.densityestimator.impl.CrowdingDistanceDensityEstimator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.solutionattribute.Ranking;
-import org.uma.jmetal.util.solutionattribute.impl.CrowdingDistance;
-import org.uma.jmetal.util.solutionattribute.impl.DominanceRanking;
+import org.uma.jmetal.util.ranking.Ranking;
+import org.uma.jmetal.util.ranking.impl.FastNonDominatedSortRanking;
 import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
@@ -62,12 +63,13 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
 
             if (flag == 0) {
                 this.currentNeighbors.add(offspring);
-                Ranking<S> rank = new DominanceRanking<>();
-                rank.computeRanking(this.currentNeighbors);
-                CrowdingDistance<S> crowdingDistance = new CrowdingDistance<>();
+                Ranking<S> rank = new FastNonDominatedSortRanking<>();
+                rank.compute(this.currentNeighbors);
+                DensityEstimator<S> crowdingDistance = new CrowdingDistanceDensityEstimator<>();
 
                 IntStream.range(0, rank.getNumberOfSubFronts()).forEach(index ->
-                        crowdingDistance.computeDensityEstimator(rank.getSubFront(index)));
+                        crowdingDistance.compute(rank.getSubFront(index))
+                );
 
                 this.currentNeighbors.sort(new RankingAndCrowdingDistanceComparator<>());
                 if (offspring.equals(this.currentNeighbors.get(this.currentNeighbors.size() - 1))) {

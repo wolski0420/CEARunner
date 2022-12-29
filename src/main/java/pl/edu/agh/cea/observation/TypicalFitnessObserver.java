@@ -16,7 +16,7 @@ public class TypicalFitnessObserver implements Subscriber{
     @Override
     public void update(List<? extends AdjacencySolution<?, ?>> population) {
         fitnessHistory.add(population.stream()
-                .map(solution -> solution.getAttribute(Fitness.class))
+                .map(solution -> solution.attributes().get(Fitness.class))
                 .map(solution -> (Double) solution)
                 .collect(Collectors.toList()));
     }

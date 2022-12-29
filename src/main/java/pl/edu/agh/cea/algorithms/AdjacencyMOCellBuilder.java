@@ -5,7 +5,7 @@ import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.operator.selection.impl.BestSolutionSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.FitnessComparator;
@@ -19,7 +19,6 @@ import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -46,16 +46,16 @@ public class AdjacencyBitFlipMutation extends BitFlipMutation implements Adjacen
         if (!awardedNeighbours.isEmpty()) {
             AdjacencySolution<?, ?> chosenAwardedNeighbour = new ArrayList<>(awardedNeighbours).get(random.nextInt(awardedNeighbours.size()));
 
-            int randomIndex = random.nextInt(Math.min(solution.getNumberOfVariables(), chosenAwardedNeighbour.getNumberOfVariables()));
-            for(int i = 0; i < solution.getNumberOfVariables(); ++i) {
+            int randomIndex = random.nextInt(Math.min(solution.variables().size(), chosenAwardedNeighbour.variables().size()));
+            for(int i = 0; i < solution.variables().size(); ++i) {
                 if (i == randomIndex) {
                     // random variable is going to be copied from neighbour
-                    solution.setVariable(randomIndex, (BinarySet) chosenAwardedNeighbour.getVariable(randomIndex));
+                    solution.variables().set(randomIndex, (BinarySet) chosenAwardedNeighbour.variables().get(randomIndex));
                 } else {
                     // rest of variables are flipped
-                    for(int j = 0; j < solution.getVariable(i).getBinarySetLength(); ++j) {
+                    for(int j = 0; j < solution.variables().get(i).getBinarySetLength(); ++j) {
                         if (random.nextDouble(1) <= probability) {
-                            solution.getVariable(i).flip(j);
+                            solution.variables().get(i).flip(j);
                         }
                     }
                 }
