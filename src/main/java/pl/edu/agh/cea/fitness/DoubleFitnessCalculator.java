@@ -1,6 +1,7 @@
 package pl.edu.agh.cea.fitness;
 
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.solutionattribute.impl.Fitness;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
@@ -8,14 +9,14 @@ import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalculator<AdjacencyDoubleSolution> {
+public class DoubleFitnessCalculator implements FitnessCalculator<DoubleSolution> {
 
     protected List<List<Double>> indicatorValues;
     protected double maxIndicatorValue;
 
     double calculateHypervolumeIndicator(
-            AdjacencyDoubleSolution solutionA,
-            AdjacencyDoubleSolution solutionB,
+            DoubleSolution solutionA,
+            DoubleSolution solutionB,
             int d,
             List<Double> maximumValues,
             List<Double> minimumValues
@@ -49,8 +50,8 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
     }
 
     public void computeIndicatorValuesHD(
-            List<AdjacencyDoubleSolution> population,
-            Problem<AdjacencyDoubleSolution> problem,
+            List<DoubleSolution> population,
+            Problem<DoubleSolution> problem,
             List<Double> maximumValues,
             List<Double> minimumValues
     ) {
@@ -58,15 +59,15 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
         this.maxIndicatorValue = -Double.MAX_VALUE;
 
         for(int i = 0; i < population.size(); i++) {
-            List<AdjacencyDoubleSolution> A = new ArrayList<>(1);
+            List<DoubleSolution> A = new ArrayList<>(1);
             A.add(population.get(i));
             List<Double> aux = new ArrayList<>();
 
             double value;
-            for (AdjacencyDoubleSolution solution : population) {
-                List<AdjacencyDoubleSolution> B = new ArrayList<>(1);
+            for (DoubleSolution solution : population) {
+                List<DoubleSolution> B = new ArrayList<>(1);
                 B.add(solution);
-                int flag = (new DominanceComparator<AdjacencyDoubleSolution>()).compare(A.get(0), B.get(0));
+                int flag = (new DominanceComparator<DoubleSolution>()).compare(A.get(0), B.get(0));
                 if (flag < 0) {
                     value = -this.calculateHypervolumeIndicator(A.get(0), B.get(0), problem.getNumberOfObjectives(), maximumValues, minimumValues);
                 } else {
@@ -85,7 +86,7 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
 
     }
 
-    public double fitness(List<AdjacencyDoubleSolution> population, int position) {
+    public double fitness(List<DoubleSolution> population, int position) {
         double fitness = 0.0;
         double kappa = 0.05;
 
@@ -99,7 +100,7 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
     }
 
     @Override
-    public void calculate(List<AdjacencyDoubleSolution> population, Problem<AdjacencyDoubleSolution> problem) {
+    public void calculate(List<DoubleSolution> population, Problem<DoubleSolution> problem) {
         List<Double> maximumValues = new ArrayList<>(problem.getNumberOfObjectives());
         List<Double> minimumValues = new ArrayList<>(problem.getNumberOfObjectives());
 

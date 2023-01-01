@@ -11,7 +11,7 @@ import org.uma.jmetal.util.densityestimator.impl.CrowdingDistanceDensityEstimato
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.ranking.Ranking;
 import org.uma.jmetal.util.ranking.impl.FastNonDominatedSortRanking;
-import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
+import pl.edu.agh.cea.fitness.FitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 import pl.edu.agh.cea.observation.Observable;
@@ -35,10 +35,10 @@ import java.util.stream.IntStream;
  */
 public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S> implements Observable {
     private final AwardedSolutionSelector<S> awardSelector;
-    private final AdjacencyFitnessCalculator<S> fitnessCalculator;
+    private final FitnessCalculator<S> fitnessCalculator;
     private final List<Subscriber> subscribers;
 
-    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector, AdjacencyFitnessCalculator<S> fitnessCalculator) {
+    public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector, FitnessCalculator<S> fitnessCalculator) {
         super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
         this.awardSelector = awardSelector;
         this.fitnessCalculator = fitnessCalculator;
@@ -112,6 +112,7 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
      * Calculating fitness must be done at the beginning of the execution and in all iterations
      * To avoid extending run method, there is first method from execution taken into consideration
      * Before initializing progress, fitness is being calculated and set to all the solutions
+     * After init update, subscribers are notified about change
      */
     @Override
     protected void initProgress() {
@@ -125,7 +126,7 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
      * Calculating fitness must be done at the beginning of the execution and in all iterations
      * To avoid extending run method, there is one method inside iteration loop which update progress
      * Before update, fitness is being calculated again and set to all the solutions
-     * After update, subscribers are
+     * After update, subscribers are notified about change
      */
     @Override
     protected void updateProgress() {

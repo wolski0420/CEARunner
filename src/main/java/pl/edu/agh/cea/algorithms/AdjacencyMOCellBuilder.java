@@ -11,7 +11,7 @@ import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.FitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
+import pl.edu.agh.cea.fitness.FitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 import pl.edu.agh.cea.observation.Subscriber;
@@ -36,7 +36,7 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
     private SelectionOperator<List<S>, S> selectionOperator;
     private SolutionListEvaluator<S> evaluator;
     private AwardedSolutionSelector<S> awardSelector;
-    private AdjacencyFitnessCalculator<S> fitnessCalculator;
+    private FitnessCalculator<S> fitnessCalculator;
     private final List<Subscriber> algorithmSubscribers;
 
     public AdjacencyMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator) {
@@ -106,7 +106,7 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         return this;
     }
 
-    public AdjacencyMOCellBuilder<S> setFitnessCalculator(AdjacencyFitnessCalculator<S> fitnessCalculator) {
+    public AdjacencyMOCellBuilder<S> setFitnessCalculator(FitnessCalculator<S> fitnessCalculator) {
         this.fitnessCalculator = fitnessCalculator;
         return this;
     }

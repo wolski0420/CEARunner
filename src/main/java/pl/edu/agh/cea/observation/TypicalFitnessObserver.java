@@ -1,7 +1,7 @@
 package pl.edu.agh.cea.observation;
 
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.solutionattribute.impl.Fitness;
-import pl.edu.agh.cea.model.solution.AdjacencySolution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class TypicalFitnessObserver implements Subscriber{
     private final List<List<Double>> fitnessHistory = new ArrayList<>();
 
     @Override
-    public void update(List<? extends AdjacencySolution<?, ?>> population) {
+    public void update(List<? extends Solution<?>> population) {
         fitnessHistory.add(population.stream()
                 .map(solution -> solution.attributes().get(Fitness.class))
                 .map(solution -> (Double) solution)

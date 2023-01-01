@@ -1,6 +1,6 @@
 package pl.edu.agh.cea.observation;
 
-import pl.edu.agh.cea.model.solution.AdjacencySolution;
+import org.uma.jmetal.solution.Solution;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public interface Subscriber {
      * Updates its collected data, method used to ping from Observable
      * @param population - list of solutions to watch
      */
-    void update(List<? extends AdjacencySolution<?, ?>> population);
+    void update(List<? extends Solution<?>> population);
 }

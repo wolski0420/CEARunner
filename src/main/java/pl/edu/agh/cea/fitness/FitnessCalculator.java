@@ -1,7 +1,7 @@
 package pl.edu.agh.cea.fitness;
 
 import org.uma.jmetal.problem.Problem;
-import pl.edu.agh.cea.model.solution.AdjacencySolution;
+import org.uma.jmetal.solution.Solution;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * Interface for fitness calculators, they may vary in methodology
  * @param <S>
  */
-public interface AdjacencyFitnessCalculator<S extends AdjacencySolution<S, ?>> {
+public interface FitnessCalculator<S extends Solution<?>> {
     /**
      * Method to calculate fitness for every population member
      * @param population - list of Solutions

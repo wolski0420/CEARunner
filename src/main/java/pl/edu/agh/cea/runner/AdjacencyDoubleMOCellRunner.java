@@ -1,8 +1,5 @@
 package pl.edu.agh.cea.runner;
 
-import com.github.sh0nk.matplotlib4j.NumpyUtils;
-import com.github.sh0nk.matplotlib4j.Plot;
-import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.example.AlgorithmRunner;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
@@ -10,19 +7,21 @@ import org.uma.jmetal.operator.crossover.impl.SBXCrossover;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
-import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import pl.edu.agh.cea.algorithms.AdjacencyMOCellBuilder;
-import pl.edu.agh.cea.fitness.AdjacencyDoubleFitnessCalculator;
+import pl.edu.agh.cea.fitness.DoubleFitnessCalculator;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
 import pl.edu.agh.cea.observation.TypicalFitnessObserver;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
+import pl.edu.agh.cea.problems.AdjacencyDoubleLSMOP9;
+import pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer;
+import pl.edu.agh.cea.utils.ResultsPlotter;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  Cellular Evolutionary Algorithm sociocognitive scenario
@@ -31,23 +30,18 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
     public AdjacencyDoubleMOCellRunner() {
     }
 
-    public static void main(String[] args) throws JMetalException, IOException, PythonExecutionException {
+    public static void main(String[] args) {
+        // @TODO benchmarks: Sphere/Dejong, Ackley, Rastrigin, Griewang, Schweffel (Schaffer?)
+        // @TODO check if there is a possibility to choose single or multi criteria
+        Problem<DoubleSolution> problem = new AdjacencyDoubleLSMOP9();
         String referenceParetoFront = "";
-        String problemName;
 
         if (args.length == 1) {
-            problemName = args[0];
+            problem = ProblemUtils.loadProblem(args[0]);
         } else if (args.length == 2) {
-            problemName = args[0];
+            problem = ProblemUtils.loadProblem(args[0]);
             referenceParetoFront = args[1];
-        } else {
-            // @TODO benchmarks: Sphere/Dejong, Ackley, Rastrigin, Griewang, Schweffel (Schaffer?)
-            // @TODO check if there is a possibility to choose single or multi criteria
-            problemName = "pl.edu.agh.cea.problems.AdjacencyDoubleLSMOP9";
-            // referenceParetoFront = "resources/referenceFrontsCSV/ZDT4.csv";
         }
-
-        Problem<AdjacencyDoubleSolution> problem = ProblemUtils.loadProblem(problemName);
 
         double crossoverProbability = 0.9;
         double crossoverDistributionIndex = 20.0;
@@ -63,7 +57,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
                 .setMaxEvaluations(25000)
                 .setPopulationSize(100)
                 .setArchive(new CrowdingDistanceArchive<>(100))
-                .setFitnessCalculator(new AdjacencyDoubleFitnessCalculator())
+                .setFitnessCalculator(new DoubleFitnessCalculator())
                 .setAlgorithmObservers(fitnessObserver)
                 .build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();
@@ -73,19 +67,13 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
 
         printFinalSolutionSet(population);
-//        if (!referenceParetoFront.equals("")) {
-//            printQualityIndicators(population, referenceParetoFront);
-//        }
+        if (!referenceParetoFront.equals("")) {
+            printQualityIndicators(population, referenceParetoFront);
+        }
 
-        List<Double> avgHistory = fitnessObserver.getAveragesPerEpoch();
-
-        List<Double> x = NumpyUtils.linspace(0, avgHistory.size(), avgHistory.size());
-        List<Double> y = avgHistory;
-
-        Plot plt = Plot.create();
-        plt.plot().add(x, y, "o").label("Fitness");
-        plt.legend().loc("upper right");
-        plt.title("Avg. fitness per iterations");
-        plt.show();
+        ResultsPlotter resultsPlotter = new ResultsPlotter();
+        resultsPlotter.plotFitnessAvgPerEpoch(fitnessObserver.getAveragesPerEpoch().stream()
+                .filter(value -> !value.isNaN())
+                .collect(Collectors.toList()));
     }
 }
