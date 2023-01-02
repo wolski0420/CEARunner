@@ -21,7 +21,6 @@ import pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer;
 import pl.edu.agh.cea.utils.ResultsPlotter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *  Cellular Evolutionary Algorithm sociocognitive scenario
@@ -72,8 +71,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         }
 
         ResultsPlotter resultsPlotter = new ResultsPlotter();
-        resultsPlotter.plotFitnessAvgPerEpoch(fitnessObserver.getAveragesPerEpoch().stream()
-                .filter(value -> !value.isNaN())
-                .collect(Collectors.toList()));
+        resultsPlotter.plotFitnessAvgPerEpoch(fitnessObserver.getAveragesPerEpoch(),
+                AdjacencyDoubleMOCellRunner.class.getSimpleName());
     }
 }
