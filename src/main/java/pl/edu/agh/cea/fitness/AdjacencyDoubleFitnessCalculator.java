@@ -72,8 +72,11 @@ public class AdjacencyDoubleFitnessCalculator implements AdjacencyFitnessCalcula
                 } else {
                     value = this.calculateHypervolumeIndicator(B.get(0), A.get(0), problem.getNumberOfObjectives(), maximumValues, minimumValues);
                 }
+                if (Double.isNaN(value)) {
+                    value = 0.0;
+                }
 
-                if (Math.abs(value) > this.maxIndicatorValue) {
+                if (value != 0.0 && Math.abs(value) > this.maxIndicatorValue) {
                     this.maxIndicatorValue = Math.abs(value);
                 }
 
