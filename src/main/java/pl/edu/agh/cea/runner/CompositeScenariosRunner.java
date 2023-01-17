@@ -8,10 +8,12 @@ public class CompositeScenariosRunner {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         executor.execute(() -> DefaultRewrittenJMetalScenario.main(new String[]{
-                "org.uma.jmetal.problem.multiobjective.Schaffer"
+                "org.uma.jmetal.problem.multiobjective.Schaffer",
+                "resources/referenceFrontsCSV/Schaffer.csv"
         }));
         executor.execute(() -> AdjacencyDoubleMOCellRunner.main(new String[]{
-                "pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer"
+                "pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer",
+                "resources/referenceFrontsCSV/Schaffer.csv"
         }));
 
         executor.shutdown();
