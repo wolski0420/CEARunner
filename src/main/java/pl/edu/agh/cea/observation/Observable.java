@@ -8,7 +8,9 @@ public interface Observable {
      * Subscribing object which wants to receive some data and manipulate it
      * @param subscriber - object receiving and manipulating data
      */
-    void addSubscriber(Subscriber subscriber);
+    void addFitnessSubscriber(Subscriber subscriber);
+
+    void addHyperVolumeSubscriber(Subscriber subscriber);
 
     /**
      * Informs all subscribers about changes

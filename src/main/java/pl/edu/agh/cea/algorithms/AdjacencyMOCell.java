@@ -36,13 +36,15 @@ import java.util.stream.IntStream;
 public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S> implements Observable {
     private final AwardedSolutionSelector<S> awardSelector;
     private final FitnessCalculator<S> fitnessCalculator;
-    private final List<Subscriber> subscribers;
+    private final List<Subscriber> fitnessSubscribers;
+    private final List<Subscriber> hyperVolumeSubscribers;
 
     public AdjacencyMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, AdjacencyMaintainer<S> neighborhood, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, AwardedSolutionSelector<S> awardSelector, FitnessCalculator<S> fitnessCalculator) {
         super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
         this.awardSelector = awardSelector;
         this.fitnessCalculator = fitnessCalculator;
-        this.subscribers = new ArrayList<>();
+        this.fitnessSubscribers = new ArrayList<>();
+        this.hyperVolumeSubscribers = new ArrayList<>();
     }
 
     /**
@@ -136,12 +138,16 @@ public class AdjacencyMOCell<S extends AdjacencySolution<S, ?>> extends MOCell<S
     }
 
     @Override
-    public void addSubscriber(Subscriber subscriber) {
-        subscribers.add(subscriber);
+    public void addFitnessSubscriber(Subscriber subscriber) {
+        fitnessSubscribers.add(subscriber);
     }
 
     @Override
+    public void addHyperVolumeSubscriber(Subscriber subscriber) {hyperVolumeSubscribers.add(subscriber);}
+
+    @Override
     public void updateAll() {
-        subscribers.forEach(subscriber -> subscriber.update(population));
+        fitnessSubscribers.forEach(subscriber -> subscriber.update(population));
+        hyperVolumeSubscribers.forEach(subscriber -> subscriber.update(population));
     }
 }

@@ -4,6 +4,7 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 import org.uma.jmetal.util.solutionattribute.impl.Fitness;
+import org.uma.jmetal.util.solutionattribute.impl.HypervolumeContributionAttribute;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
 
 import java.util.ArrayList;
@@ -125,6 +126,14 @@ public class DoubleFitnessCalculator implements FitnessCalculator<DoubleSolution
 
         for(int position = 0; position < population.size(); position++) {
             population.get(position).attributes().put(Fitness.class, fitness(population, position));
+
+            double hyperVolumeValue = 0.0;
+            for(int i = 0; i < population.size(); ++i) {
+                if (i != position) {
+                    hyperVolumeValue += this.indicatorValues.get(position).get(i);
+                }
+            }
+            population.get(position).attributes().put(HypervolumeContributionAttribute.class, hyperVolumeValue / (population.size() - 1));
         }
     }
 

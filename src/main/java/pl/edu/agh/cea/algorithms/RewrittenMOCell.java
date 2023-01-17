@@ -18,12 +18,14 @@ import java.util.List;
 
 public class RewrittenMOCell<S extends Solution<?>> extends MOCell<S> implements Observable {
     private final FitnessCalculator<S> fitnessCalculator;
-    private final List<Subscriber> subscribers;
+    private final List<Subscriber> fitnessSubscribers;
+    private final List<Subscriber> hyperVolumeSubscribers;
 
     public RewrittenMOCell(Problem<S> problem, int maxEvaluations, int populationSize, BoundedArchive<S> archive, Neighborhood<S> neighborhood, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator, SelectionOperator<List<S>, S> selectionOperator, SolutionListEvaluator<S> evaluator, FitnessCalculator<S> fitnessCalculator) {
         super(problem, maxEvaluations, populationSize, archive, neighborhood, crossoverOperator, mutationOperator, selectionOperator, evaluator);
         this.fitnessCalculator = fitnessCalculator;
-        this.subscribers = new ArrayList<>();
+        this.fitnessSubscribers = new ArrayList<>();
+        this.hyperVolumeSubscribers = new ArrayList<>();
     }
 
     /**
@@ -57,12 +59,16 @@ public class RewrittenMOCell<S extends Solution<?>> extends MOCell<S> implements
     }
 
     @Override
-    public void addSubscriber(Subscriber subscriber) {
-        subscribers.add(subscriber);
+    public void addFitnessSubscriber(Subscriber subscriber) {
+        fitnessSubscribers.add(subscriber);
     }
 
     @Override
+    public void addHyperVolumeSubscriber(Subscriber subscriber) {hyperVolumeSubscribers.add(subscriber);}
+
+    @Override
     public void updateAll() {
-        subscribers.forEach(subscriber -> subscriber.update(population));
+        fitnessSubscribers.forEach(subscriber -> subscriber.update(population));
+        hyperVolumeSubscribers.forEach(subscriber -> subscriber.update(population));
     }
 }

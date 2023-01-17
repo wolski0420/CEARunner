@@ -34,7 +34,8 @@ public class RewrittenMOCellBuilder<S extends Solution<?>> implements AlgorithmB
     private SelectionOperator<List<S>, S> selectionOperator;
     private SolutionListEvaluator<S> evaluator;
     private FitnessCalculator<S> fitnessCalculator;
-    private final List<Subscriber> algorithmSubscribers;
+    private final List<Subscriber> algorithmFitnessSubscribers;
+    private final List<Subscriber> algorithmHyperVolumeSubscribers;
 
     public RewrittenMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, MutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -46,7 +47,8 @@ public class RewrittenMOCellBuilder<S extends Solution<?>> implements AlgorithmB
         this.neighborhood = new C9<>((int) Math.sqrt(this.populationSize), (int) Math.sqrt(this.populationSize));
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
-        this.algorithmSubscribers = new ArrayList<>();
+        this.algorithmFitnessSubscribers = new ArrayList<>();
+        this.algorithmHyperVolumeSubscribers = new ArrayList<>();
     }
 
     public RewrittenMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -102,8 +104,13 @@ public class RewrittenMOCellBuilder<S extends Solution<?>> implements AlgorithmB
         return this;
     }
 
-    public RewrittenMOCellBuilder<S> setAlgorithmObservers(Subscriber ... subscribers) {
-        this.algorithmSubscribers.addAll(List.of(subscribers));
+    public RewrittenMOCellBuilder<S> setAlgorithmHyperVolumeObservers(Subscriber ... subscribers) {
+        this.algorithmHyperVolumeSubscribers.addAll(List.of(subscribers));
+        return this;
+    }
+
+    public RewrittenMOCellBuilder<S> setAlgorithmFitnessObservers(Subscriber ... subscribers) {
+        this.algorithmFitnessSubscribers.addAll(List.of(subscribers));
         return this;
     }
 
@@ -113,7 +120,8 @@ public class RewrittenMOCellBuilder<S extends Solution<?>> implements AlgorithmB
                 archive, neighborhood, crossoverOperator, mutationOperator,
                 selectionOperator, evaluator, fitnessCalculator);
 
-        algorithmSubscribers.forEach(RewrittenMOCell::addSubscriber);
+        algorithmFitnessSubscribers.forEach(RewrittenMOCell::addFitnessSubscriber);
+        algorithmHyperVolumeSubscribers.forEach(RewrittenMOCell::addHyperVolumeSubscriber);
         return RewrittenMOCell;
     }
 }

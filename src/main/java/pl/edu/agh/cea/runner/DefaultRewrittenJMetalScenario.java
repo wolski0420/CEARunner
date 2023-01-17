@@ -14,11 +14,16 @@ import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
+import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetal.util.archive.impl.HypervolumeArchive;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
+import org.uma.jmetal.util.legacy.qualityindicator.impl.hypervolume.impl.PISAHypervolume;
 import pl.edu.agh.cea.algorithms.RewrittenMOCellBuilder;
 import pl.edu.agh.cea.fitness.DoubleFitnessCalculator;
 import pl.edu.agh.cea.observation.TypicalFitnessObserver;
+import pl.edu.agh.cea.observation.TypicalHyperVolumeObserver;
+import pl.edu.agh.cea.problems.AdjacencyDoubleZDT6;
 import pl.edu.agh.cea.utils.ResultsPlotter;
 
 import java.util.List;
@@ -29,8 +34,8 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
     }
 
     public static void main(String[] args) {
-        Problem<DoubleSolution> problem = new RE21();
-        String referenceParetoFront = "resources/referenceFrontsCSV/RE21.csv";
+        Problem<DoubleSolution> problem = new AdjacencyDoubleZDT6();
+        String referenceParetoFront = "resources/referenceFrontsCSV/ZDT6.csv";
 
         if (args.length == 1) {
             problem = ProblemUtils.loadProblem(args[0]);
@@ -50,6 +55,9 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
         SelectionOperator<List<DoubleSolution>, DoubleSolution> selection = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
 
         TypicalFitnessObserver fitnessObserver = new TypicalFitnessObserver();
+        TypicalHyperVolumeObserver hyperVolumeObserver = new TypicalHyperVolumeObserver();
+
+        BoundedArchive<DoubleSolution> archive = new HypervolumeArchive(100, new PISAHypervolume());
 
         Algorithm<List<DoubleSolution>> algorithm = new RewrittenMOCellBuilder<>(problem, crossover, mutation)
                 .setSelectionOperator(selection)
@@ -57,7 +65,9 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
                 .setPopulationSize(100)
                 .setArchive(new CrowdingDistanceArchive(100))
                 .setFitnessCalculator(new DoubleFitnessCalculator())
-                .setAlgorithmObservers(fitnessObserver)
+                .setAlgorithmFitnessObservers(fitnessObserver)
+                .setAlgorithmHyperVolumeObservers(hyperVolumeObserver)
+                .setArchive(archive)
                 .build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();
         List<DoubleSolution> population = algorithm.getResult();
@@ -71,7 +81,7 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
         }
 
         ResultsPlotter resultsPlotter = new ResultsPlotter();
-        resultsPlotter.plotFitnessAvgPerEpoch(fitnessObserver.getAveragesPerEpoch(),
+        resultsPlotter.plotFitnessAvgPerEpoch(hyperVolumeObserver.getAveragesPerEpoch(),
                 DefaultRewrittenJMetalScenario.class.getSimpleName());
     }
 }

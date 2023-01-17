@@ -37,7 +37,8 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
     private SolutionListEvaluator<S> evaluator;
     private AwardedSolutionSelector<S> awardSelector;
     private FitnessCalculator<S> fitnessCalculator;
-    private final List<Subscriber> algorithmSubscribers;
+    private final List<Subscriber> algorithmFitnessSubscribers;
+    private final List<Subscriber> algorithmHyperVolumeSubscribers;
 
     public AdjacencyMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -50,7 +51,8 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
         this.awardSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
-        this.algorithmSubscribers = new ArrayList<>();
+        this.algorithmFitnessSubscribers = new ArrayList<>();
+        this.algorithmHyperVolumeSubscribers = new ArrayList<>();
     }
 
     public AdjacencyMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -111,8 +113,13 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         return this;
     }
 
-    public AdjacencyMOCellBuilder<S> setAlgorithmObservers(Subscriber ... subscribers) {
-        this.algorithmSubscribers.addAll(List.of(subscribers));
+    public AdjacencyMOCellBuilder<S> setAlgorithmFitnessObservers(Subscriber ... subscribers) {
+        this.algorithmFitnessSubscribers.addAll(List.of(subscribers));
+        return this;
+    }
+
+    public AdjacencyMOCellBuilder<S> setAlgorithmHyperVolumeObservers(Subscriber ... subscribers) {
+        this.algorithmHyperVolumeSubscribers.addAll(List.of(subscribers));
         return this;
     }
 
@@ -122,7 +129,8 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
                 archive, neighborhood, crossoverOperator, mutationOperator,
                 selectionOperator, evaluator, awardSelector, fitnessCalculator);
 
-        algorithmSubscribers.forEach(adjacencyMOCell::addSubscriber);
+        algorithmFitnessSubscribers.forEach(adjacencyMOCell::addFitnessSubscriber);
+        algorithmHyperVolumeSubscribers.forEach(adjacencyMOCell::addHyperVolumeSubscriber);
         return adjacencyMOCell;
     }
 }

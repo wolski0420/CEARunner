@@ -1,5 +1,6 @@
 package pl.edu.agh.cea.runner;
 
+import org.uma.jmetal.example.multiobjective.mocell.MOCellHVRunner;
 import org.uma.jmetal.example.multiobjective.mocell.MOCellRunner;
 
 import java.io.FileNotFoundException;
@@ -10,7 +11,7 @@ import java.io.FileNotFoundException;
 public class DefaultJMetalScenario {
     public static void main(String[] args) {
         try {
-            MOCellRunner.main(args);
+            MOCellHVRunner.main(args);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
