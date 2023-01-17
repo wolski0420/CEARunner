@@ -20,7 +20,7 @@ import pl.edu.agh.cea.observation.TypicalFitnessObserver;
 import pl.edu.agh.cea.observation.TypicalHyperVolumeObserver;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
-import pl.edu.agh.cea.problems.AdjacencyDoubleZDT6;
+import pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer;
 import pl.edu.agh.cea.utils.ResultsPlotter;
 
 import java.util.List;
@@ -35,8 +35,8 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
     public static void main(String[] args) {
         // @TODO benchmarks: Sphere/Dejong, Ackley, Rastrigin, Griewang, Schweffel (Schaffer?)
         // @TODO check if there is a possibility to choose single or multi criteria
-        Problem<DoubleSolution> problem = new AdjacencyDoubleZDT6();
-        String referenceParetoFront = "resources/referenceFrontsCSV/ZDT6.csv";
+        Problem<DoubleSolution> problem = new AdjacencyDoubleSchaffer();
+        String referenceParetoFront = "";
 
         if (args.length == 1) {
             problem = ProblemUtils.loadProblem(args[0]);
@@ -79,7 +79,7 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         }
 
         ResultsPlotter resultsPlotter = new ResultsPlotter();
-        resultsPlotter.plotFitnessAvgPerEpoch(fitnessObserver.getAveragesPerEpoch(),
+        resultsPlotter.plotHyperVolumeAvgPerEpoch(hyperVolumeObserver.getAveragesPerEpoch(),
                 AdjacencyDoubleMOCellRunner.class.getSimpleName());
     }
 }

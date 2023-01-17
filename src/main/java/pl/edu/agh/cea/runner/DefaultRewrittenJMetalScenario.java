@@ -9,7 +9,7 @@ import org.uma.jmetal.operator.mutation.impl.PolynomialMutation;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.problem.multiobjective.re.RE21;
+import org.uma.jmetal.problem.multiobjective.Schaffer;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
@@ -23,7 +23,6 @@ import pl.edu.agh.cea.algorithms.RewrittenMOCellBuilder;
 import pl.edu.agh.cea.fitness.DoubleFitnessCalculator;
 import pl.edu.agh.cea.observation.TypicalFitnessObserver;
 import pl.edu.agh.cea.observation.TypicalHyperVolumeObserver;
-import pl.edu.agh.cea.problems.AdjacencyDoubleZDT6;
 import pl.edu.agh.cea.utils.ResultsPlotter;
 
 import java.util.List;
@@ -34,8 +33,8 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
     }
 
     public static void main(String[] args) {
-        Problem<DoubleSolution> problem = new AdjacencyDoubleZDT6();
-        String referenceParetoFront = "resources/referenceFrontsCSV/ZDT6.csv";
+        Problem<DoubleSolution> problem = new Schaffer();
+        String referenceParetoFront = "";
 
         if (args.length == 1) {
             problem = ProblemUtils.loadProblem(args[0]);
@@ -81,7 +80,7 @@ public class DefaultRewrittenJMetalScenario extends AbstractAlgorithmRunner {
         }
 
         ResultsPlotter resultsPlotter = new ResultsPlotter();
-        resultsPlotter.plotFitnessAvgPerEpoch(hyperVolumeObserver.getAveragesPerEpoch(),
+        resultsPlotter.plotHyperVolumeAvgPerEpoch(hyperVolumeObserver.getAveragesPerEpoch(),
                 DefaultRewrittenJMetalScenario.class.getSimpleName());
     }
 }
