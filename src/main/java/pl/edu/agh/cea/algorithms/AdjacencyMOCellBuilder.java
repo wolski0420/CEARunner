@@ -5,18 +5,20 @@ import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.operator.selection.impl.BestSolutionSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
 import org.uma.jmetal.util.comparator.FitnessComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
-import pl.edu.agh.cea.fitness.AdjacencyFitnessCalculator;
+import pl.edu.agh.cea.fitness.FitnessCalculator;
 import pl.edu.agh.cea.model.neighbourhood.AdjacencyMaintainer;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
+import pl.edu.agh.cea.observation.Subscriber;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.utils.AwardedSolutionSelector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +36,9 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
     private SelectionOperator<List<S>, S> selectionOperator;
     private SolutionListEvaluator<S> evaluator;
     private AwardedSolutionSelector<S> awardSelector;
-    private AdjacencyFitnessCalculator<S> fitnessCalculator;
+    private FitnessCalculator<S> fitnessCalculator;
+    private final List<Subscriber> algorithmFitnessSubscribers;
+    private final List<Subscriber> algorithmHyperVolumeSubscribers;
 
     public AdjacencyMOCellBuilder(Problem<S> problem, CrossoverOperator<S> crossoverOperator, AdjacencyMutationOperator<S> mutationOperator) {
         this.problem = problem;
@@ -47,6 +51,8 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         this.evaluator = new SequentialSolutionListEvaluator<>();
         this.archive = new CrowdingDistanceArchive<>(this.populationSize);
         this.awardSelector = new AwardedSolutionSelector<>(new FitnessComparator<>(), 0.1, 0.01, 0.02);
+        this.algorithmFitnessSubscribers = new ArrayList<>();
+        this.algorithmHyperVolumeSubscribers = new ArrayList<>();
     }
 
     public AdjacencyMOCellBuilder<S> setMaxEvaluations(int maxEvaluations) {
@@ -102,15 +108,29 @@ public class AdjacencyMOCellBuilder<S extends AdjacencySolution<S, ?>> implement
         return this;
     }
 
-    public AdjacencyMOCellBuilder<S> setFitnessCalculator(AdjacencyFitnessCalculator<S> fitnessCalculator) {
+    public AdjacencyMOCellBuilder<S> setFitnessCalculator(FitnessCalculator<S> fitnessCalculator) {
         this.fitnessCalculator = fitnessCalculator;
+        return this;
+    }
+
+    public AdjacencyMOCellBuilder<S> setAlgorithmFitnessObservers(Subscriber ... subscribers) {
+        this.algorithmFitnessSubscribers.addAll(List.of(subscribers));
+        return this;
+    }
+
+    public AdjacencyMOCellBuilder<S> setAlgorithmHyperVolumeObservers(Subscriber ... subscribers) {
+        this.algorithmHyperVolumeSubscribers.addAll(List.of(subscribers));
         return this;
     }
 
     @Override
     public AdjacencyMOCell<S> build() {
-        return new AdjacencyMOCell<>(problem, maxEvaluations, populationSize,
+        AdjacencyMOCell<S> adjacencyMOCell = new AdjacencyMOCell<>(problem, maxEvaluations, populationSize,
                 archive, neighborhood, crossoverOperator, mutationOperator,
                 selectionOperator, evaluator, awardSelector, fitnessCalculator);
+
+        algorithmFitnessSubscribers.forEach(adjacencyMOCell::addFitnessSubscriber);
+        algorithmHyperVolumeSubscribers.forEach(adjacencyMOCell::addHyperVolumeSubscriber);
+        return adjacencyMOCell;
     }
 }

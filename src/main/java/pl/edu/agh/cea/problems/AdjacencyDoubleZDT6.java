@@ -12,6 +12,6 @@ import java.util.ArrayList;
 public class AdjacencyDoubleZDT6 extends ZDT6 {
     @Override
     public DoubleSolution createSolution() {
-        return new AdjacencyDoubleSolution(getBounds(), getNumberOfObjectives(), getNumberOfConstraints(), new ArrayList<>());
+        return new AdjacencyDoubleSolution(bounds, getNumberOfObjectives(), getNumberOfConstraints(), new ArrayList<>());
     }
 }

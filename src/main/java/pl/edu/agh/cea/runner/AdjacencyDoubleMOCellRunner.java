@@ -7,17 +7,22 @@ import org.uma.jmetal.operator.crossover.impl.SBXCrossover;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.ProblemUtils;
+import org.uma.jmetal.util.archive.BoundedArchive;
 import org.uma.jmetal.util.archive.impl.CrowdingDistanceArchive;
+import org.uma.jmetal.util.archive.impl.HypervolumeArchive;
+import org.uma.jmetal.util.legacy.qualityindicator.impl.hypervolume.impl.PISAHypervolume;
 import pl.edu.agh.cea.algorithms.AdjacencyMOCellBuilder;
-import pl.edu.agh.cea.fitness.AdjacencyDoubleFitnessCalculator;
+import pl.edu.agh.cea.fitness.DoubleFitnessCalculator;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
+import pl.edu.agh.cea.observation.TypicalFitnessObserver;
+import pl.edu.agh.cea.observation.TypicalHyperVolumeObserver;
 import pl.edu.agh.cea.operator.AdjacencyMutationOperator;
 import pl.edu.agh.cea.operator.AdjacencyPolynomialMutation;
+import pl.edu.agh.cea.problems.AdjacencyDoubleSchaffer;
+import pl.edu.agh.cea.utils.ResultsPlotter;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -27,21 +32,18 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
     public AdjacencyDoubleMOCellRunner() {
     }
 
-    public static void main(String[] args) throws JMetalException, FileNotFoundException {
+    public static void main(String[] args) {
+        // @TODO benchmarks: Sphere/Dejong, Ackley, Rastrigin, Griewang, Schweffel (Schaffer?)
+        // @TODO check if there is a possibility to choose single or multi criteria
+        Problem<DoubleSolution> problem = new AdjacencyDoubleSchaffer();
         String referenceParetoFront = "";
-        String problemName;
 
         if (args.length == 1) {
-            problemName = args[0];
+            problem = ProblemUtils.loadProblem(args[0]);
         } else if (args.length == 2) {
-            problemName = args[0];
+            problem = ProblemUtils.loadProblem(args[0]);
             referenceParetoFront = args[1];
-        } else {
-            problemName = "pl.edu.agh.cea.problems.AdjacencyDoubleZDT6";
-            referenceParetoFront = "resources/referenceFrontsCSV/ZDT4.csv";
         }
-
-        Problem<AdjacencyDoubleSolution> problem = ProblemUtils.loadProblem(problemName);
 
         double crossoverProbability = 0.9;
         double crossoverDistributionIndex = 20.0;
@@ -51,11 +53,19 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
         double mutationDistributionIndex = 20.0;
         AdjacencyMutationOperator<DoubleSolution> mutation = new AdjacencyPolynomialMutation(mutationProbability, mutationDistributionIndex);
 
+        TypicalFitnessObserver fitnessObserver = new TypicalFitnessObserver();
+        TypicalHyperVolumeObserver hyperVolumeObserver = new TypicalHyperVolumeObserver();
+
+        BoundedArchive<DoubleSolution> archive = new HypervolumeArchive(100, new PISAHypervolume());
+
         Algorithm<List<AdjacencyDoubleSolution>> algorithm = new AdjacencyMOCellBuilder(problem, crossover, mutation)
                 .setMaxEvaluations(25000)
                 .setPopulationSize(100)
                 .setArchive(new CrowdingDistanceArchive<>(100))
-                .setFitnessCalculator(new AdjacencyDoubleFitnessCalculator())
+                .setFitnessCalculator(new DoubleFitnessCalculator())
+                .setAlgorithmFitnessObservers(fitnessObserver)
+                .setAlgorithmHyperVolumeObservers(hyperVolumeObserver)
+                .setArchive(archive)
                 .build();
         AlgorithmRunner algorithmRunner = (new AlgorithmRunner.Executor(algorithm)).execute();
         List<AdjacencyDoubleSolution> population = algorithm.getResult();
@@ -68,5 +78,8 @@ public class AdjacencyDoubleMOCellRunner extends AbstractAlgorithmRunner {
             printQualityIndicators(population, referenceParetoFront);
         }
 
+        ResultsPlotter resultsPlotter = new ResultsPlotter();
+        resultsPlotter.plotHyperVolumeAvgPerEpoch(hyperVolumeObserver.getAveragesPerEpoch(),
+                AdjacencyDoubleMOCellRunner.class.getSimpleName());
     }
 }

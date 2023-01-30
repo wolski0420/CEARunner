@@ -4,8 +4,7 @@ import org.uma.jmetal.operator.mutation.impl.PolynomialMutation;
 import org.uma.jmetal.solution.doublesolution.DoubleSolution;
 import org.uma.jmetal.solution.util.repairsolution.RepairDoubleSolution;
 import org.uma.jmetal.solution.util.repairsolution.impl.RepairDoubleSolutionWithBoundValue;
-import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.checking.Check;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.RandomGenerator;
 import pl.edu.agh.cea.model.solution.AdjacencyDoubleSolution;
@@ -45,7 +44,6 @@ public class AdjacencyPolynomialMutation extends PolynomialMutation implements A
 
     @Override
     public DoubleSolution execute(DoubleSolution solution) throws JMetalException {
-        Check.isNotNull(solution);
         this.doMutation(solution);
         return solution;
     }
@@ -64,15 +62,15 @@ public class AdjacencyPolynomialMutation extends PolynomialMutation implements A
         if (!awardedNeighbours.isEmpty()) {
             AdjacencySolution<?, ?> chosenAwardedNeighbour = new ArrayList<>(awardedNeighbours).get(random.nextInt(awardedNeighbours.size()));
 
-            int randomIndex = random.nextInt(Math.min(solution.getNumberOfVariables(), chosenAwardedNeighbour.getNumberOfVariables()));
-            for(int i = 0; i < solution.getNumberOfVariables(); ++i) {
+            int randomIndex = random.nextInt(Math.min(solution.variables().size(), chosenAwardedNeighbour.variables().size()));
+            for(int i = 0; i < solution.variables().size(); ++i) {
                 if (i == randomIndex) {
                     // random variable is going to be copied from neighbour
-                    solution.setVariable(randomIndex, (Double) chosenAwardedNeighbour.getVariable(randomIndex));
+                    solution.variables().set(randomIndex, (Double) chosenAwardedNeighbour.variables().get(randomIndex));
                 } else {
-                    double y = solution.getVariable(i);
-                    double yl = solution.getLowerBound(i);
-                    double yu = solution.getUpperBound(i);
+                    double y = solution.variables().get(i);
+                    double yl = solution.getBounds(i).getLowerBound();
+                    double yu = solution.getBounds(i).getUpperBound();
                     if (yl == yu) {
                         y = yl;
                     } else {
@@ -96,15 +94,15 @@ public class AdjacencyPolynomialMutation extends PolynomialMutation implements A
                         y += deltaq * (yu - yl);
                         y = this.solutionRepair.repairSolutionVariableValue(y, yl, yu);
                     }
-                    solution.setVariable(i, y);
+                    solution.variables().set(i, y);
                 }
             }
         } else {
-            for(int i = 0; i < solution.getNumberOfVariables(); ++i) {
+            for(int i = 0; i < solution.variables().size(); ++i) {
                 if (this.randomGenerator.getRandomValue() <= this.mutationProbability) {
-                    double y = solution.getVariable(i);
-                    double yl = solution.getLowerBound(i);
-                    double yu = solution.getUpperBound(i);
+                    double y = solution.variables().get(i);
+                    double yl = solution.getBounds(i).getLowerBound();
+                    double yu = solution.getBounds(i).getUpperBound();
                     if (yl == yu) {
                         y = yl;
                     } else {
@@ -129,7 +127,7 @@ public class AdjacencyPolynomialMutation extends PolynomialMutation implements A
                         y = this.solutionRepair.repairSolutionVariableValue(y, yl, yu);
                     }
 
-                    solution.setVariable(i, y);
+                    solution.variables().set(i, y);
                 }
             }
         }

@@ -1,6 +1,6 @@
 package pl.edu.agh.cea.model.neighbourhood;
 
-import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.errorchecking.JMetalException;
 import org.uma.jmetal.util.neighborhood.Neighborhood;
 import pl.edu.agh.cea.model.solution.AdjacencySolution;
 import pl.edu.agh.cea.utils.SolutionListValidator;
